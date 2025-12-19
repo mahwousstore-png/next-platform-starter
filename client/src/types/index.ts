@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'user' | 'owner';
+export type UserRole = "admin" | "user" | "owner";
 
 export interface UserProfile {
   id: string;
@@ -18,7 +18,14 @@ export interface Employee {
   email?: string;
 }
 
-export type ExpenseType = 'work_expense' | 'custody_payment' | 'salary' | 'bonus' | 'deduction' | 'loan' | 'other';
+export type ExpenseType =
+  | "work_expense"
+  | "custody_payment"
+  | "salary"
+  | "bonus"
+  | "deduction"
+  | "loan"
+  | "other";
 
 export interface Expense {
   id: string;
@@ -28,29 +35,49 @@ export interface Expense {
   amount: number;
   date: string;
   month: string;
-  paymentMethod: 'cash' | 'bank_transfer' | 'check';
-  status: 'pending' | 'paid' | 'rejected';
+  paymentMethod: "cash" | "bank_transfer" | "check";
+  status: "pending" | "paid" | "rejected";
   notes?: string;
   receiptUrl?: string;
   createdAt: string;
   confirmedByEmployee: boolean;
   confirmedAt?: string;
-  createdBy: 'admin' | 'employee';
+  createdBy: "admin" | "employee";
   createdByName?: string;
 }
 
-export const EXPENSE_TYPES: { value: ExpenseType; label: string; color: string }[] = [
-  { value: 'work_expense', label: 'مصروفات عمل (عهدة)', color: 'bg-red-100 text-red-800' },
-  { value: 'custody_payment', label: 'صرف عهدة للموظف', color: 'bg-green-100 text-green-800' },
-  { value: 'salary', label: 'راتب شهري', color: 'bg-blue-100 text-blue-800' },
-  { value: 'bonus', label: 'مكافأة / حافز', color: 'bg-purple-100 text-purple-800' },
-  { value: 'deduction', label: 'خصم / جزاء', color: 'bg-orange-100 text-orange-800' },
-  { value: 'loan', label: 'سلفة', color: 'bg-yellow-100 text-yellow-800' },
-  { value: 'other', label: 'أخرى', color: 'bg-gray-100 text-gray-800' },
+export const EXPENSE_TYPES: {
+  value: ExpenseType;
+  label: string;
+  color: string;
+}[] = [
+  {
+    value: "work_expense",
+    label: "مصروفات عمل (عهدة)",
+    color: "bg-red-100 text-red-800",
+  },
+  {
+    value: "custody_payment",
+    label: "صرف عهدة للموظف",
+    color: "bg-green-100 text-green-800",
+  },
+  { value: "salary", label: "راتب شهري", color: "bg-blue-100 text-blue-800" },
+  {
+    value: "bonus",
+    label: "مكافأة / حافز",
+    color: "bg-purple-100 text-purple-800",
+  },
+  {
+    value: "deduction",
+    label: "خصم / جزاء",
+    color: "bg-orange-100 text-orange-800",
+  },
+  { value: "loan", label: "سلفة", color: "bg-yellow-100 text-yellow-800" },
+  { value: "other", label: "أخرى", color: "bg-gray-100 text-gray-800" },
 ];
 
 export const PAYMENT_STATUSES = [
-  { value: 'pending', label: 'معلق', color: 'bg-yellow-100 text-yellow-800' },
-  { value: 'paid', label: 'مكتمل', color: 'bg-green-100 text-green-800' },
-  { value: 'rejected', label: 'مرفوض', color: 'bg-red-100 text-red-800' },
+  { value: "pending", label: "معلق", color: "bg-yellow-100 text-yellow-800" },
+  { value: "paid", label: "مكتمل", color: "bg-green-100 text-green-800" },
+  { value: "rejected", label: "مرفوض", color: "bg-red-100 text-red-800" },
 ];

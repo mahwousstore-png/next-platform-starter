@@ -46,7 +46,10 @@ interface AddExpenseDialogProps {
   onSuccess: () => void;
 }
 
-export function AddExpenseDialog({ employeeId, onSuccess }: AddExpenseDialogProps) {
+export function AddExpenseDialog({
+  employeeId,
+  onSuccess,
+}: AddExpenseDialogProps) {
   const [open, setOpen] = useState(false);
 
   const form = useForm({
@@ -64,12 +67,12 @@ export function AddExpenseDialog({ employeeId, onSuccess }: AddExpenseDialogProp
       // Auto-convert to negative if it's a work expense (custody deduction)
       // But keep positive for display, the backend/service handles the debit logic
       // Actually, let's make it explicit here as requested
-      
+
       // The user enters a positive number (e.g. 50).
       // If type is 'work_expense', we want to deduct it.
       // The dataService.addExpense handles the debit/credit logic based on type.
       // So we just pass the positive amount and let the service handle the sign in the DB transaction.
-      
+
       const newExpense: Omit<Expense, "id" | "createdAt"> = {
         confirmedByEmployee: false,
         employeeId,
@@ -89,7 +92,7 @@ export function AddExpenseDialog({ employeeId, onSuccess }: AddExpenseDialogProp
       setOpen(false);
       form.reset();
       onSuccess();
-    } catch (error) {
+    } catch {
       toast.error("حدث خطأ أثناء إضافة المصروف");
     }
   }
@@ -117,14 +120,17 @@ export function AddExpenseDialog({ employeeId, onSuccess }: AddExpenseDialogProp
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>نوع العملية</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="اختر النوع" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {EXPENSE_TYPES.map((type) => (
+                      {EXPENSE_TYPES.map(type => (
                         <SelectItem key={type.value} value={type.value}>
                           {type.label}
                         </SelectItem>
@@ -142,7 +148,12 @@ export function AddExpenseDialog({ employeeId, onSuccess }: AddExpenseDialogProp
                 <FormItem>
                   <FormLabel>المبلغ (ر.س)</FormLabel>
                   <FormControl>
-                    <Input type="number" step="0.01" {...field} value={field.value as number} />
+                    <Input
+                      type="number"
+                      step="0.01"
+                      {...field}
+                      value={field.value as number}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

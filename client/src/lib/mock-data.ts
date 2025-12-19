@@ -8,7 +8,7 @@ export const MOCK_EMPLOYEES: Employee[] = [
     salary: 5000,
     joinDate: "2023-01-15",
     custodyBalance: 1500,
-    email: "ahmed@example.com"
+    email: "ahmed@example.com",
   },
   {
     id: "2",
@@ -17,7 +17,7 @@ export const MOCK_EMPLOYEES: Employee[] = [
     salary: 4500,
     joinDate: "2023-03-10",
     custodyBalance: 500,
-    email: "sara@example.com"
+    email: "sara@example.com",
   },
   {
     id: "3",
@@ -26,6 +26,6 @@ export const MOCK_EMPLOYEES: Employee[] = [
     salary: 3500,
     joinDate: "2023-06-01",
     custodyBalance: 2000,
-    email: "khaled@example.com"
-  }
+    email: "khaled@example.com",
+  },
 ];
