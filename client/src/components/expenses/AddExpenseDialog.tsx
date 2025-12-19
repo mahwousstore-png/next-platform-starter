@@ -35,7 +35,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
-  amount: z.coerce.number().min(0.01, "المبلغ مطلوب ويجب أن يكون أكبر من صفر"),
+  amount: z.coerce.number().refine(val => val !== 0, "المبلغ مطلوب ويجب أن يكون مختلف عن صفر"),
   type: z.string().min(1, "نوع المصروف مطلوب"),
   date: z.string().min(1, "التاريخ مطلوب"),
   notes: z.string().optional(),
