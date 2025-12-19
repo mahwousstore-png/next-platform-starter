@@ -102,7 +102,12 @@ export function AddExpenseDialog({
       await dataService.addExpense(newExpense);
       toast.success("تم إضافة العملية بنجاح");
       setOpen(false);
-      form.reset();
+      form.reset({
+        amount: 0,
+        type: "work_expense",
+        date: new Date().toISOString().split("T")[0],
+        notes: "",
+      });
       onSuccess();
     } catch {
       toast.error("حدث خطأ أثناء إضافة العملية");
@@ -165,7 +170,7 @@ export function AddExpenseDialog({
                       step="0.01"
                       placeholder="أدخل المبلغ (موجب أو سالب)"
                       value={field.value as number}
-                      onChange={field.onChange}
+                      onChange={(e) => field.onChange(e.target.value)}
                       onBlur={field.onBlur}
                       name={field.name}
                       ref={field.ref}
