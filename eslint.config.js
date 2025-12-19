@@ -53,6 +53,18 @@ export default [
     },
   },
   {
+    files: ['client/src/components/ui/**/*.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  {
+    files: ['client/src/contexts/ThemeContext.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  {
     files: ['client/src/hooks/usePersistFn.ts'],
     rules: {
       'react-hooks/unsupported-syntax': 'off',
