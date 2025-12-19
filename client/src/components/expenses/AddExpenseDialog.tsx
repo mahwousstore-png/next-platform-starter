@@ -35,7 +35,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
-  amount: z.coerce.number().min(1, "المبلغ مطلوب"),
+  amount: z.coerce.number().min(0.01, "المبلغ مطلوب ويجب أن يكون أكبر من صفر"),
   type: z.string().min(1, "نوع المصروف مطلوب"),
   date: z.string().min(1, "التاريخ مطلوب"),
   notes: z.string().optional(),
@@ -55,7 +55,7 @@ export function AddExpenseDialog({
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: 0,
+      amount: 0, // Valid number for form validation
       type: "work_expense",
       date: new Date().toISOString().split("T")[0],
       notes: "",
@@ -64,36 +64,49 @@ export function AddExpenseDialog({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      // Auto-convert to negative if it's a work expense (custody deduction)
-      // But keep positive for display, the backend/service handles the debit logic
-      // Actually, let's make it explicit here as requested
+      // Handle amount logic based on type
+      let finalAmount = values.amount;
 
-      // The user enters a positive number (e.g. 50).
-      // If type is 'work_expense', we want to deduct it.
-      // The dataService.addExpense handles the debit/credit logic based on type.
-      // So we just pass the positive amount and let the service handle the sign in the DB transaction.
+      // Special handling for custody_payment (صرف عهدة)
+      // If it's custody_payment, treat it as a deduction (negative)
+      if (values.type === "custody_payment") {
+        finalAmount = -Math.abs(values.amount);
+      }
+
+      // For Abu Tamim custody operations, ensure it's recorded properly
+      const isAbuTamimOperation = values.notes?.includes("Abu Tamim") ||
+                                  values.notes?.includes("أبو تميم") ||
+                                  employeeId === "abu_tamim";
 
       const newExpense: Omit<Expense, "id" | "createdAt"> = {
         confirmedByEmployee: false,
         employeeId,
-        employeeName: "", // Will be filled by backend/service
+        employeeName: "", // Will be populated by dataService
         type: values.type as any,
-        amount: values.amount,
+        amount: finalAmount,
         date: values.date,
         month: values.date.substring(0, 7),
         paymentMethod: "cash",
         status: "pending",
-        notes: values.notes,
+        notes: isAbuTamimOperation
+          ? `${values.notes || ""} [Source: Abu Tamim Custody]`.trim()
+          : values.notes,
         createdBy: "employee", // Default, will be overridden by service based on actual user
+        createdByName: isAbuTamimOperation ? "Abu Tamim" : undefined,
       };
 
       await dataService.addExpense(newExpense);
-      toast.success("تم إضافة المصروف بنجاح");
+      toast.success("تم إضافة العملية بنجاح");
       setOpen(false);
-      form.reset();
+      form.reset({
+        amount: 0,
+        type: "work_expense",
+        date: new Date().toISOString().split("T")[0],
+        notes: "",
+      });
       onSuccess();
     } catch {
-      toast.error("حدث خطأ أثناء إضافة المصروف");
+      toast.error("حدث خطأ أثناء إضافة العملية");
     }
   }
 
@@ -102,14 +115,14 @@ export function AddExpenseDialog({
       <DialogTrigger asChild>
         <Button className="gap-2">
           <PlusIcon className="h-4 w-4" />
-          إضافة مصروف جديد
+          إضافة عملية جديدة
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>إضافة مصروف جديد</DialogTitle>
+          <DialogTitle>إضافة عملية جديدة</DialogTitle>
           <DialogDescription>
-            أدخل تفاصيل المصروف ليتم خصمه من العهدة أو إضافته.
+            أدخل تفاصيل العملية المالية (مصروفات أو صرف عهدة).
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -151,8 +164,8 @@ export function AddExpenseDialog({
                     <Input
                       type="number"
                       step="0.01"
-                      {...field}
-                      value={field.value as number}
+                      value={(field.value as number) || ""}
+                      onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
                     />
                   </FormControl>
                   <FormMessage />

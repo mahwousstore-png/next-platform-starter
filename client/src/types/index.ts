@@ -58,7 +58,7 @@ export const EXPENSE_TYPES: {
   },
   {
     value: "custody_payment",
-    label: "صرف عهدة للموظف",
+    label: "صرف عهدة",
     color: "bg-green-100 text-green-800",
   },
   { value: "salary", label: "راتب شهري", color: "bg-blue-100 text-blue-800" },

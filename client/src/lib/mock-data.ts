@@ -28,4 +28,13 @@ export const MOCK_EMPLOYEES: Employee[] = [
     custodyBalance: 2000,
     email: "khaled@example.com",
   },
+  {
+    id: "abu_tamim",
+    name: "أبو تميم",
+    role: "مدير النظام",
+    salary: 0,
+    joinDate: "2023-01-01",
+    custodyBalance: 10000,
+    email: "abu.tamim@system.com",
+  },
 ];

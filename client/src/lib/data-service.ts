@@ -56,22 +56,19 @@ async function addExpense(
   await delay(500);
   try {
     const expenses = await fetchExpenses();
+    const employees = await fetchEmployees();
 
-    // LOGIC: Auto-convert to negative if it's a work expense
-    // This ensures the deduction logic requested by the user
+    // Find employee name
+    const employee = employees.find(e => e.id === expense.employeeId);
+    const employeeName = employee ? employee.name : "غير معروف";
+
+    // LOGIC: Amount signs are now handled in the UI layer (AddExpenseDialog)
+    // The amount comes in with the correct sign already applied
     let finalAmount = expense.amount;
-    if (expense.type === "work_expense" || expense.type === "deduction") {
-      finalAmount = -Math.abs(expense.amount);
-    } else if (
-      expense.type === "custody_payment" ||
-      expense.type === "salary" ||
-      expense.type === "bonus"
-    ) {
-      finalAmount = Math.abs(expense.amount);
-    }
 
     const newExpense: Expense = {
       ...expense,
+      employeeName,
       amount: finalAmount,
       id: Math.random().toString(36).substr(2, 9),
       createdAt: new Date().toISOString(),
