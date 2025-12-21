@@ -11,7 +11,7 @@ import {
 import { dataService } from "@/lib/data-service";
 import { Employee, Expense } from "@/types";
 import { Users, Wallet } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function Home() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -57,14 +57,17 @@ export default function Home() {
     await loadData();
   }, [loadData]);
 
-  // Re-fetch employees when data changes to get updated balances
-  const selectedEmployee = initialized 
-    ? employees.find((e) => e.id === selectedEmployeeId) 
-    : undefined;
+  // Memoize selected employee to avoid recalculating on every render
+  const selectedEmployee = useMemo(() => {
+    if (!initialized) return undefined;
+    return employees.find((e) => e.id === selectedEmployeeId);
+  }, [initialized, employees, selectedEmployeeId]);
 
-  const filteredExpenses = selectedEmployeeId
-    ? expenses.filter((e) => e.employeeId === selectedEmployeeId)
-    : expenses;
+  // Memoize filtered expenses to avoid recalculating on every render
+  const filteredExpenses = useMemo(() => {
+    if (!selectedEmployeeId) return expenses;
+    return expenses.filter((e) => e.employeeId === selectedEmployeeId);
+  }, [expenses, selectedEmployeeId]);
 
   if (loading) {
     return (
