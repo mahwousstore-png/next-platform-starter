@@ -122,6 +122,26 @@ async function confirmExpense(id: string): Promise<boolean> {
   }
 }
 
+// Reject an expense
+async function rejectExpense(id: string): Promise<boolean> {
+  await delay(300);
+  try {
+    const expenses = await fetchExpenses();
+    const index = expenses.findIndex(e => e.id === id);
+    if (index >= 0) {
+      expenses[index].status = "rejected";
+      expenses[index].confirmedByEmployee = false;
+      expenses[index].confirmedAt = new Date().toISOString();
+      localStorage.setItem(STORAGE_KEYS.EXPENSES, JSON.stringify(expenses));
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error("Error rejecting expense:", err);
+    return false;
+  }
+}
+
 // Delete expense (Reverse transaction)
 async function deleteExpense(id: string): Promise<boolean> {
   await delay(300);
@@ -151,5 +171,6 @@ export const dataService = {
   getEmployees: fetchEmployees,
   addExpense,
   confirmExpense,
+  rejectExpense,
   deleteExpense,
 };

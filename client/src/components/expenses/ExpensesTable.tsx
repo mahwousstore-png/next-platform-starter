@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { dataService } from "@/lib/data-service";
 import { EXPENSE_TYPES, Expense, PAYMENT_STATUSES } from "@/types";
-import { CheckCircle2, Trash2, User } from "lucide-react";
+import { CheckCircle2, Trash2, User, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface ExpensesTableProps {
@@ -46,13 +46,15 @@ export function ExpensesTable({
     );
   };
 
-  const handleConfirm = async (id: string) => {
-    const success = await dataService.confirmExpense(id);
-    if (success) {
-      toast.success("تم تأكيد الاستلام بنجاح");
-      onUpdate();
-    } else {
-      toast.error("حدث خطأ أثناء التأكيد");
+  const handleReject = async (id: string) => {
+    if (confirm("هل أنت متأكد من رفض هذا المصروف؟")) {
+      const success = await dataService.rejectExpense(id);
+      if (success) {
+        toast.success("تم رفض المصروف بنجاح");
+        onUpdate();
+      } else {
+        toast.error("حدث خطأ أثناء الرفض");
+      }
     }
   };
 
@@ -137,14 +139,24 @@ export function ExpensesTable({
                   <div className="flex items-center gap-2">
                     {expense.status === "pending" &&
                       expense.employeeId === currentUserId && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleConfirm(expense.id)}
-                          title="تأكيد الاستلام"
-                        >
-                          <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        </Button>
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleConfirm(expense.id)}
+                            title="تأكيد الاستلام"
+                          >
+                            <CheckCircle2 className="h-4 w-4 text-green-600" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleReject(expense.id)}
+                            title="رفض المصروف"
+                          >
+                            <X className="h-4 w-4 text-red-600" />
+                          </Button>
+                        </>
                       )}
                     <Button
                       variant="ghost"
